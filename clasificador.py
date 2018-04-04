@@ -91,5 +91,25 @@ class Clasificador():
             lambda x, y: x * y,
             [self.get_probability_of_word(word, self.get_inverse_type(type), k) for word in N]
         ) * self.get_probability_of_word(None, self.get_inverse_type(type), k)
+        # print(upperFactor)
+        # print(lowerFactor)
 
         return upperFactor / (upperFactor + lowerFactor)
+
+    def get_performance(self,test_messages,k):
+        successes = []
+        for i in range(len(test_messages)):
+            probability = self.classify_message(test_messages[i][0],self.SPAM_MESSAGE, k)
+            type_of_message = test_messages[i][1]
+            if probability >= 0.7:
+                if(type_of_message == 1):
+                    successes.append(1)
+                else:
+                    successes.append(0)
+            else:
+                if(type_of_message == 0):
+                    successes.append(1)
+                else:
+                    successes.append(0)
+        #print(successes)
+        return successes.count(1)/len(successes)

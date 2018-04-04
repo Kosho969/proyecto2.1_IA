@@ -1,34 +1,8 @@
-import re
+
 import random
 import sys
 from clasificador import Clasificador
-
-'''
-Sanitization involves removing all non-letter characters and removing
-words consisting in one only letter
-'''
-def sanitize_classified_messages(messages):
-    regex = re.compile('[^a-zA-Z]')
-
-    for i in range (len(messages)):
-        messages[i] = regex.sub(' ', messages[i])
-        messages[i] = re.sub(' +', ' ', messages[i])
-        # TODO: convert message to lowercase
-        messages[i] = ' '.join([
-            w for w in messages[i].split() if len(w) > 1
-        ])
-
-    return messages
-
-def debug_messages(messages):
-    for message in messages:
-        print("=================")
-        print(message)
-        print("\n")
-
-def remove_elements(messages,index):
-    del messages[0:index + 1]
-    return messages
+from general_functions import *
 
 ham_messages = []
 spam_messages = []
@@ -42,6 +16,9 @@ with open('corpus.txt') as f:
             ham_messages.append(value[1])
         else:
             spam_messages.append(value[1])
+
+ham_messages2 = ham_messages
+spam_messages2 = spam_messages
 
 spam_messages = sanitize_classified_messages(spam_messages)
 ham_messages = sanitize_classified_messages(ham_messages)
@@ -73,13 +50,15 @@ spam_cross_validation_messages = [spam_messages[i] for i in range(cv_percentage)
 spam_messages = remove_elements(spam_messages,cv_percentage)
 spam_test_messages = spam_messages
 
-# clasificador = Clasificador(ham_training_words, spam_training_words)
+# Write to files to keep data
+write_message(ham_training_messages, "train_ham.txt")
+write_message(spam_training_messages, "train_spam.txt")
+write_message(ham_cross_validation_messages, "cv_ham.txt")
+write_message(spam_cross_validation_messages, "cv_spam.txt")
+write_message(ham_test_messages, "test_ham.txt")
+write_message(spam_test_messages, "test_spam.txt")
 
-clasificador = Clasificador(
-    ['play sports today', 'went play sports', 'secret sports event', 'sports is today', 'sports cost money'],
-    ['offer is secret', 'click secret link', 'secret sports link']
-)
-
+# print(clasificador.classify_message('secret is secret', clasificador.SPAM_MESSAGE, 0))
 # TODO: Implementar clasificador.get_performance(test_messages_dict, k)
 #   test_messages_dict: [
 #     ('Test message 1', spam),
