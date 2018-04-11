@@ -4,11 +4,12 @@ import sys
 from clasificador import Clasificador
 from general_functions import *
 
+
 ham_training_messages = convert_to_list('train_ham.txt')
 spam_training_messages = convert_to_list('train_spam.txt')
 
 
-input_file = 'test_file.txt'
+input_file = 'test_sms.txt'
 k = 0.48100000000000026
 
 
@@ -24,6 +25,7 @@ clasificador = Clasificador(ham_training_messages, spam_training_messages)
 results = []
 for i in range(len(messages_to_classify)):
     probability = clasificador.classify_message(messages_to_classify[i], clasificador.SPAM_MESSAGE, k)
+    print(i)
     if probability >= 0.7:
         results.append('spam\t{}'.format(original_messages[i]))
     else:
